@@ -17,18 +17,9 @@
 
 package com.thebuzzmedia.exiftool;
 
-import static com.thebuzzmedia.exiftool.tests.ReflectionUtils.readPrivateField;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.io.File;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
 import com.thebuzzmedia.exiftool.core.schedulers.DefaultScheduler;
 import com.thebuzzmedia.exiftool.core.schedulers.NoOpScheduler;
+import com.thebuzzmedia.exiftool.core.schedulers.SchedulerDuration;
 import com.thebuzzmedia.exiftool.core.strategies.DefaultStrategy;
 import com.thebuzzmedia.exiftool.core.strategies.PoolStrategy;
 import com.thebuzzmedia.exiftool.core.strategies.StayOpenStrategy;
@@ -44,6 +35,17 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import java.io.File;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import static com.thebuzzmedia.exiftool.core.schedulers.SchedulerDuration.duration;
+import static com.thebuzzmedia.exiftool.tests.ReflectionUtils.readPrivateField;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ExifToolBuilderTest {
 
@@ -222,8 +224,8 @@ public class ExifToolBuilderTest {
 			.isExactlyInstanceOf(StayOpenStrategy.class);
 
 		Scheduler scheduler = readPrivateField(strategy, "scheduler");
-		assertThat(readPrivateField(scheduler, "delay")).isEqualTo(delay);
-		assertThat(readPrivateField(scheduler, "timeUnit")).isEqualTo(TimeUnit.MILLISECONDS);
+		SchedulerDuration expectedDelay = duration(delay, TimeUnit.MILLISECONDS);
+		assertThat(readPrivateField(scheduler, "executionDelay")).isEqualTo(expectedDelay);
 	}
 
 	@Test
@@ -239,8 +241,8 @@ public class ExifToolBuilderTest {
 			.isExactlyInstanceOf(StayOpenStrategy.class);
 
 		Scheduler scheduler = readPrivateField(strategy, "scheduler");
-		assertThat(readPrivateField(scheduler, "delay")).isEqualTo(600000L);
-		assertThat(readPrivateField(scheduler, "timeUnit")).isEqualTo(TimeUnit.MILLISECONDS);
+		SchedulerDuration expectedDelay = duration(600000L, TimeUnit.MILLISECONDS);
+		assertThat(readPrivateField(scheduler, "executionDelay")).isEqualTo(expectedDelay);
 	}
 
 	@Test
@@ -294,7 +296,6 @@ public class ExifToolBuilderTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void it_should_create_with_pool_strategy() throws Exception {
 		ExifTool exifTool = builder
 			.withExecutor(executor)
@@ -358,7 +359,6 @@ public class ExifToolBuilderTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void it_should_create_with_pool_strategy_and_no_op_scheduler() throws Exception {
 		ExifTool exifTool = builder
 				.withExecutor(executor)
