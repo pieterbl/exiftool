@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -360,7 +360,8 @@ public class ExifToolBuilder {
 		if (poolSize > 0) {
 			this.poolSize = poolSize;
 			this.cleanupDelay = cleanupDelay;
-		} else {
+		}
+		else {
 			log.warn("Pool size has been enabled with a value less or equal than zero, ignore it.");
 		}
 
@@ -384,7 +385,8 @@ public class ExifToolBuilder {
 		if (poolSize > 0) {
 			this.poolSize = poolSize;
 			this.cleanupDelay = 0L;
-		} else {
+		}
+		else {
 			log.warn("Pool size has been enabled with a value less or equal than zero, ignore it.");
 		}
 

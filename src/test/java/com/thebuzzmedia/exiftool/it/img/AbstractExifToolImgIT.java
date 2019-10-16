@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
 import com.thebuzzmedia.exiftool.core.StandardFormat;
 import com.thebuzzmedia.exiftool.core.StandardTag;
-import com.thebuzzmedia.exiftool.tests.FileUtils;
 import com.thebuzzmedia.exiftool.tests.junit.OpenedProcessRule;
 import org.junit.After;
 import org.junit.Before;
@@ -33,6 +32,8 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.util.Map;
 
+import static com.thebuzzmedia.exiftool.tests.FileTestUtils.copy;
+import static com.thebuzzmedia.exiftool.tests.TagTestUtils.parseTags;
 import static com.thebuzzmedia.exiftool.tests.TestConstants.EXIF_TOOL;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,18 +57,18 @@ public abstract class AbstractExifToolImgIT {
 	@Before
 	public void setUp() {
 		exifTool = new ExifToolBuilder()
-			.withPath(PATH)
-			.build();
+				.withPath(PATH)
+				.build();
 
 		exifToolStayOpen = new ExifToolBuilder()
-			.withPath(PATH)
-			.enableStayOpen()
-			.build();
+				.withPath(PATH)
+				.enableStayOpen()
+				.build();
 
 		exifToolPool = new ExifToolBuilder()
-			.withPath(PATH)
-			.withPoolSize(2)
-			.build();
+				.withPath(PATH)
+				.withPoolSize(2)
+				.build();
 	}
 
 	@After
@@ -80,6 +81,11 @@ public abstract class AbstractExifToolImgIT {
 	@Test
 	public void testGetImageMeta() throws Exception {
 		verifyGetMeta(exifTool);
+	}
+
+	@Test
+	public void testGetAllImageMeta() throws Exception {
+		verifyGetAllMeta(exifTool);
 	}
 
 	@Test
@@ -118,10 +124,15 @@ public abstract class AbstractExifToolImgIT {
 		checkMeta(exifTool, file, StandardTag.values(), expectations());
 	}
 
+	private void verifyGetAllMeta(ExifTool exifTool) throws Exception {
+		File file = new File("src/test/resources/images/" + image());
+		checkAllMetaContains(exifTool, file, expectations());
+	}
+
 	private void verifySetMeta(ExifTool exifTool) throws Exception {
 		File file = new File("src/test/resources/images/" + image());
 		File folder = tmp.newFolder("exif");
-		File tmpCopy = FileUtils.copy(file, folder);
+		File tmpCopy = copy(file, folder);
 		Map<Tag, String> meta = updateTags();
 
 		exifTool.setImageMeta(tmpCopy, StandardFormat.HUMAN_READABLE, meta);
@@ -138,22 +149,38 @@ public abstract class AbstractExifToolImgIT {
 
 	private void checkMeta(ExifTool exifTool, File image, Tag[] tags, Map<Tag, String> expectations) throws Exception {
 		Map<Tag, String> results = exifTool.getImageMeta(image, StandardFormat.HUMAN_READABLE, asList(tags));
-		assertThat(results)
-			.isNotNull()
-			.isNotEmpty()
-			.hasSize(expectations.size());
+		assertThat(results).hasSize(expectations.size());
 
 		for (Map.Entry<Tag, String> entry : results.entrySet()) {
 			Tag tag = entry.getKey();
 			assertThat(expectations)
-				.overridingErrorMessage(String.format("Result should contain tag %s", tag))
-				.containsKey(tag);
+					.overridingErrorMessage(String.format("Result should contain tag %s", tag))
+					.containsKey(tag);
 
 			String result = entry.getValue();
 			String expectation = expectations.get(tag);
 			assertThat(result)
-				.overridingErrorMessage(String.format("Result should contain tag %s with value %s", tag, expectation))
-				.isEqualToIgnoringCase(expectation);
+					.overridingErrorMessage(String.format("Result should contain tag %s with value %s", tag, expectation))
+					.isEqualToIgnoringCase(expectation);
+		}
+	}
+
+	private void checkAllMetaContains(ExifTool exifTool, File image, Map<Tag, String> expectations) throws Exception {
+		Map<Tag, String> results = exifTool.getImageMeta(image, StandardFormat.HUMAN_READABLE);
+		assertThat(results).isNotEmpty();
+		assertThat(results.size()).isGreaterThanOrEqualTo(expectations.size());
+
+		Map<String, Object> parsedResults = parseTags(results);
+		for (Map.Entry<Tag, String> entry : expectations.entrySet()) {
+			Tag tag = entry.getKey();
+			assertThat(parsedResults)
+					.overridingErrorMessage(String.format("Result should contain tag %s", tag))
+					.containsKey(tag.getDisplayName());
+
+			Object result = parsedResults.get(tag.getName());
+			assertThat(((String[]) result)[0])
+					.overridingErrorMessage(String.format("Result should contain tag %s with value %s", tag, entry.getValue()))
+					.isEqualToIgnoringCase(entry.getValue());
 		}
 	}
 

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ public class ResultHandlerTest {
 
 		handler.readLine("foo");
 		assertThat(handler.getOutput())
-			.isNotEmpty()
-			.isEqualTo("foo");
+				.isNotEmpty()
+				.isEqualTo("foo");
 
 		handler.readLine("bar");
 		assertThat(handler.getOutput())
-			.isNotEmpty()
-			.isEqualTo(
-				"foo" + TestConstants.BR + "bar"
-			);
+				.isNotEmpty()
+				.isEqualTo(
+						"foo" + TestConstants.BR + "bar"
+				);
 	}
 }

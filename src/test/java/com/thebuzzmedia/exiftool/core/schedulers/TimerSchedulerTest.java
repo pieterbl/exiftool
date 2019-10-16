@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +17,42 @@
 
 package com.thebuzzmedia.exiftool.core.schedulers;
 
-import org.junit.Rule;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.thebuzzmedia.exiftool.tests.ReflectionUtils.readPrivateField;
-import static com.thebuzzmedia.exiftool.tests.ReflectionUtils.writePrivateField;
+import static com.thebuzzmedia.exiftool.tests.ReflectionTestUtils.readPrivateField;
+import static com.thebuzzmedia.exiftool.tests.ReflectionTestUtils.writePrivateField;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.rules.ExpectedException.none;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class TimerSchedulerTest {
 
-	@Rule
-	public ExpectedException thrown = none();
-
 	@Test
-	public void it_should_not_create_scheduler_for_invalid_delay() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Delay must be strictly positive");
-		new TimerScheduler("foo", -1);
+	public void it_should_not_create_scheduler_for_invalid_delay() {
+		ThrowingCallable newTimerScheduler = new ThrowingCallable() {
+			@Override
+			public void call() {
+				new TimerScheduler("foo", -1);
+			}
+		};
+
+		assertThatThrownBy(newTimerScheduler)
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("Delay must be strictly positive");
 	}
 
 	@Test
-	public void it_should_create_scheduler() throws Exception {
+	public void it_should_create_scheduler() {
 		String name = "foo";
 		long delay = 10000;
 		TimerScheduler scheduler = new TimerScheduler(name, delay);
@@ -61,7 +67,7 @@ public class TimerSchedulerTest {
 	}
 
 	@Test
-	public void it_should_with_default_name() throws Exception {
+	public void it_should_with_default_name() {
 		long delay = 10000;
 		TimerScheduler scheduler = new TimerScheduler(null, delay);
 
@@ -75,7 +81,7 @@ public class TimerSchedulerTest {
 	}
 
 	@Test
-	public void it_should_start_scheduler() throws Exception {
+	public void it_should_start_scheduler() {
 		long delay = 10000;
 		TimerScheduler scheduler = new TimerScheduler(null, delay);
 
@@ -94,15 +100,15 @@ public class TimerSchedulerTest {
 
 		TimerTask actualScheduler = readPrivateField(scheduler, "pendingTask");
 		assertThat(actualScheduler)
-			.isNotNull()
-			.isSameAs(task);
+				.isNotNull()
+				.isSameAs(task);
 
 		task.run();
 		verify(runnable).run();
 	}
 
 	@Test
-	public void it_should_stop_scheduler() throws Exception {
+	public void it_should_stop_scheduler() {
 		long delay = 10000;
 		TimerScheduler scheduler = new TimerScheduler(null, delay);
 
@@ -127,7 +133,7 @@ public class TimerSchedulerTest {
 	}
 
 	@Test
-	public void it_should_shutdown_scheduler_without_pending_task() throws Throwable {
+	public void it_should_shutdown_scheduler_without_pending_task() {
 		long delay = 10000;
 		TimerScheduler scheduler = new TimerScheduler(null, delay);
 
@@ -142,7 +148,7 @@ public class TimerSchedulerTest {
 	}
 
 	@Test
-	public void it_should_shutdown_scheduler_with_pending_task() throws Throwable {
+	public void it_should_shutdown_scheduler_with_pending_task() {
 		long delay = 10000;
 		TimerScheduler scheduler = new TimerScheduler(null, delay);
 

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.util.List;
  * <br>
  *
  * @author Riyad Kalla (software@thebuzzmedia.com)
- * @author Mickael Jeanroy (mickael.jeanroy@gmail.com)
+ * @author Mickael Jeanroy
  * @since 1.1
  */
 public interface Format {

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * used tag that should be added to it.
  *
  * @author Riyad Kalla (software@thebuzzmedia.com)
- * @author Mickael Jeanroy (mickael.jeanroy@gmail.com)
+ * @author Mickael Jeanroy
  * @since 1.1
  */
 public enum StandardTag implements Tag {
@@ -148,10 +148,10 @@ public enum StandardTag implements Tag {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public String getDisplayName() {
-	    return name;
+		return name;
 	}
 
 	@Override
@@ -192,7 +192,8 @@ public enum StandardTag implements Tag {
 		ARRAY {
 			@Override
 			public <T> T parse(String value) {
-				return (T) value.split(Pattern.quote(Constants.SEPARATOR)); }
+				return (T) value.split(Pattern.quote(Constants.SEPARATOR));
+			}
 		};
 
 		public abstract <T> T parse(String value);

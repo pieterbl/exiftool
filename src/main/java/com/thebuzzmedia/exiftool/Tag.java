@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ package com.thebuzzmedia.exiftool;
  * any way they wish.
  *
  * @author Riyad Kalla (software@thebuzzmedia.com)
- * @author Mickael Jeanroy (mickael.jeanroy@gmail.com)
+ * @author Mickael Jeanroy
  * @since 1.1
  */
 public interface Tag {
@@ -59,13 +59,13 @@ public interface Tag {
 	 * @return Name of the tag.
 	 */
 	String getName();
-	
+
 	/**
 	 * Used to get the display name of the tag, which is the actual name printed
 	 * by the tool on stout. 
-	 * 
+	 *
 	 * For simple tags this is equivalent to value returned by <code>getName</code>.
-	 * 
+	 *
 	 * @since 2.4.0
 	 * @return Display name of the tag.
 	 */

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,36 +27,36 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TagHandlerTest {
+public class StandardTagHandlerTest {
 
 	private List<? extends Tag> inputs;
 
 	@Before
 	public void setUp() {
 		inputs = asList(
-			StandardTag.APERTURE,
-			StandardTag.ARTIST
+				StandardTag.APERTURE,
+				StandardTag.ARTIST
 		);
 	}
 
 	@Test
 	public void it_should_read_null_line() {
-		TagHandler handler = new TagHandler(inputs);
+		StandardTagHandler handler = new StandardTagHandler(inputs);
 		boolean hasNext = handler.readLine(null);
 		assertThat(hasNext).isFalse();
 		assertThat(handler.getTags())
-			.isNotNull()
-			.isEmpty();
+				.isNotNull()
+				.isEmpty();
 	}
 
 	@Test
 	public void it_should_read_last_line() {
-		TagHandler handler = new TagHandler(inputs);
+		StandardTagHandler handler = new StandardTagHandler(inputs);
 		boolean hasNext = handler.readLine("{ready}");
 		assertThat(hasNext).isFalse();
 		assertThat(handler.getTags())
-			.isNotNull()
-			.isEmpty();
+				.isNotNull()
+				.isEmpty();
 	}
 
 	@Test
@@ -64,15 +64,15 @@ public class TagHandlerTest {
 		Tag tag = StandardTag.ARTIST;
 		String value = "foobar";
 
-		TagHandler handler = new TagHandler(inputs);
+		StandardTagHandler handler = new StandardTagHandler(inputs);
 		boolean hasNext = handler.readLine(tag.getName() + ": " + value);
 
 		assertThat(hasNext).isTrue();
 		assertThat(handler.getTags())
-			.isNotNull()
-			.isNotEmpty()
-			.hasSize(1)
-			.containsEntry(tag, value);
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1)
+				.containsEntry(tag, value);
 	}
 
 	@Test
@@ -80,13 +80,13 @@ public class TagHandlerTest {
 		Tag tag = StandardTag.ARTIST;
 		String value = "foobar: foo";
 
-		TagHandler handler = new TagHandler(inputs);
+		StandardTagHandler handler = new StandardTagHandler(inputs);
 		handler.readLine(tag.getName() + ": " + value);
 
 		assertThat(handler.getTags())
-			.isNotNull()
-			.isNotEmpty()
-			.hasSize(1)
-			.containsEntry(tag, value);
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1)
+				.containsEntry(tag, value);
 	}
 }

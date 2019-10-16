@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +17,32 @@
 
 package com.thebuzzmedia.exiftool.core.cache;
 
-import static com.thebuzzmedia.exiftool.tests.TestConstants.EXIF_TOOL;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
 import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.exceptions.ExifToolNotFoundException;
 import com.thebuzzmedia.exiftool.process.Command;
 import com.thebuzzmedia.exiftool.process.CommandExecutor;
 import com.thebuzzmedia.exiftool.process.CommandResult;
 import com.thebuzzmedia.exiftool.tests.builders.CommandResultBuilder;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+
+import static com.thebuzzmedia.exiftool.tests.TestConstants.EXIF_TOOL;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class VersionCallableTest {
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Captor
 	private ArgumentCaptor<Command> cmdCaptor;
@@ -62,8 +58,8 @@ public class VersionCallableTest {
 	public void it_should_parse_version() throws Exception {
 		CommandExecutor executor = mock(CommandExecutor.class);
 		CommandResult result = new CommandResultBuilder()
-			.output("9.36")
-			.build();
+				.output("9.36")
+				.build();
 
 		when(executor.execute(any(Command.class))).thenReturn(result);
 
@@ -75,31 +71,37 @@ public class VersionCallableTest {
 		Command cmd = cmdCaptor.getValue();
 		assertThat(cmd).isNotNull();
 		assertThat(cmd.getArguments())
-			.isNotNull()
-			.isNotEmpty()
-			.hasSize(2)
-			.containsExactly(exifTool, "-ver");
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(2)
+				.containsExactly(exifTool, "-ver");
 
 		assertThat(version)
-			.isNotNull()
-			.isEqualTo(new Version("9.36.0"));
+				.isNotNull()
+				.isEqualTo(new Version("9.36.0"));
 	}
 
 	@Test
 	public void it_should_parse_version_and_throw_exception_with_failure() throws Exception {
 		CommandExecutor executor = mock(CommandExecutor.class);
 		CommandResult result = new CommandResultBuilder()
-			.success(false)
-			.build();
+				.success(false)
+				.build();
 
 		when(executor.execute(any(Command.class))).thenReturn(result);
 
-		VersionCallable callable = new VersionCallable(exifTool, executor);
+		final VersionCallable callable = new VersionCallable(exifTool, executor);
 
-		thrown.expect(ExifToolNotFoundException.class);
-		thrown.expectMessage("Cannot find exiftool from path: exifTool");
+		ThrowingCallable call = new ThrowingCallable() {
+			@Override
+			public void call() throws Throwable {
+				callable.call();
+			}
+		};
 
-		callable.call();
+		assertThatThrownBy(call)
+				.isInstanceOf(ExifToolNotFoundException.class)
+				.hasMessage("Cannot find exiftool from path: exifTool");
 	}
 
 	@Test
@@ -108,20 +110,26 @@ public class VersionCallableTest {
 		CommandExecutor executor = mock(CommandExecutor.class);
 		when(executor.execute(any(Command.class))).thenThrow(ex);
 
-		VersionCallable callable = new VersionCallable(exifTool, executor);
+		final VersionCallable callable = new VersionCallable(exifTool, executor);
 
-		thrown.expect(ExifToolNotFoundException.class);
-		thrown.expectCause(is(ex));
+		ThrowingCallable call = new ThrowingCallable() {
+			@Override
+			public void call() throws Throwable {
+				callable.call();
+			}
+		};
 
-		callable.call();
+		assertThatThrownBy(call)
+				.isInstanceOf(ExifToolNotFoundException.class)
+				.hasCause(ex);
 	}
 
 	@Test
 	public void it_should_parse_version_and_handle_null_reference() throws Exception {
 		String path = EXIF_TOOL.getAbsolutePath();
 		CommandResult result = new CommandResultBuilder()
-			.output("9.36")
-			.build();
+				.output("9.36")
+				.build();
 
 		CommandExecutor executor = mock(CommandExecutor.class);
 		when(executor.execute(any(Command.class))).thenReturn(result);

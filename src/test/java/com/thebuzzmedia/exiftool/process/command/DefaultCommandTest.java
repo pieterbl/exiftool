@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package com.thebuzzmedia.exiftool.process.command;
 
 import com.thebuzzmedia.exiftool.process.Command;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -39,5 +40,10 @@ public class DefaultCommandTest {
 		Command command = new DefaultCommand("exiftool", asList("-ver", "-stay_open"));
 		assertThat(command.toString()).isEqualTo("exiftool -ver -stay_open");
 		assertThat(command.getArguments()).isEqualTo(asList("exiftool", "-ver", "-stay_open"));
+	}
+
+	@Test
+	public void it_should_implement_equals_hash_code() {
+		EqualsVerifier.forClass(DefaultCommand.class).verify();
 	}
 }

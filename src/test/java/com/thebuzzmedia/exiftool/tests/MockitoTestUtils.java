@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,29 @@
 
 package com.thebuzzmedia.exiftool.tests;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.mockito.ArgumentMatchers;
 
-import static java.util.Collections.unmodifiableMap;
+import java.util.List;
 
 /**
- * Static Utilities for map.
+ * Static Mockito Utilities.
+ * Used in test only.
  */
-public final class MapUtils {
+public final class MockitoTestUtils {
 
-	private MapUtils() {
+	// Ensure non instantiation.
+	private MockitoTestUtils() {
 	}
 
 	/**
-	 * Create map with two entries.
+	 * Replacement for deprecated Mockito#anyListOf.
 	 *
-	 * @param k1 First key.
-	 * @param v1 First value.
-	 * @param k2 Second key.
-	 * @param v2 Second value.
-	 * @param <T> Type of keys.
-	 * @param <U> Type of values.
-	 * @return New created map.
+	 * @param klass The class.
+	 * @param <T> Type of elements.
+	 * @return List of elements of type T.
 	 */
-	public static <T, U> Map<T, U> newMap(T k1, U v1, T k2, U v2) {
-		Map<T, U> map = new LinkedHashMap<>();
-		map.put(k1, v1);
-		map.put(k2, v2);
-		return unmodifiableMap(map);
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> anyListOf(Class<T> klass) {
+		return (List<T>) ArgumentMatchers.anyList();
 	}
 }

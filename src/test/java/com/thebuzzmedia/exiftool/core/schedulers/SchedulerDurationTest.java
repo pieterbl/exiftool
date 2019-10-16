@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package com.thebuzzmedia.exiftool.core.schedulers;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,7 @@ import static com.thebuzzmedia.exiftool.core.schedulers.SchedulerDuration.second
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SchedulerDurationTest {
+
 	@Test
 	public void it_should_create_duration() {
 		long delay = 1;
@@ -50,5 +52,21 @@ public class SchedulerDurationTest {
 		SchedulerDuration duration = millis(delay);
 		assertThat(duration.getDelay()).isEqualTo(delay);
 		assertThat(duration.getTimeUnit()).isEqualTo(TimeUnit.MILLISECONDS);
+	}
+
+	@Test
+	public void it_should_implement_equals_hash_code() {
+		EqualsVerifier.forClass(SchedulerDuration.class).verify();
+	}
+
+	@Test
+	public void it_should_implement_to_string() {
+		SchedulerDuration duration = millis(1);
+		assertThat(duration).hasToString(
+				"SchedulerDuration{" +
+					"delay: 1, " +
+					"timeUnit: MILLISECONDS" +
+				"}"
+		);
 	}
 }

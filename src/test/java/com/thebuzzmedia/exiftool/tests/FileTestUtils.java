@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,11 @@ package com.thebuzzmedia.exiftool.tests;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
-public final class FileUtils {
+public final class FileTestUtils {
 
-	private FileUtils() {
+	private FileTestUtils() {
 	}
 
 	/**
@@ -33,22 +31,25 @@ public final class FileUtils {
 	 *
 	 * @param src File to copy.
 	 * @param dstFolder Destination.
-	 * @throws FileNotFoundException
-	 * @throws IOException
 	 */
-	public static File copy(File src, File dstFolder) throws IOException {
-		File dst = new File(dstFolder, src.getName());
-		FileInputStream fis = new FileInputStream(src);
-		FileOutputStream fos = new FileOutputStream(dst);
+	public static File copy(File src, File dstFolder) {
+		try {
+			File dst = new File(dstFolder, src.getName());
+			FileInputStream fis = new FileInputStream(src);
+			FileOutputStream fos = new FileOutputStream(dst);
 
-		int buf;
-		while ((buf = fis.read()) >= 0) {
-			fos.write(buf);
+			int buf;
+			while ((buf = fis.read()) >= 0) {
+				fos.write(buf);
+			}
+
+			fis.close();
+			fos.close();
+
+			return dst;
 		}
-
-		fis.close();
-		fos.close();
-
-		return dst;
+		catch (Exception ex) {
+			throw new AssertionError(ex);
+		}
 	}
 }

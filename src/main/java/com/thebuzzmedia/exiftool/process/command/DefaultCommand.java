@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 
 package com.thebuzzmedia.exiftool.process.command;
 
-import com.thebuzzmedia.exiftool.commons.lang.Objects;
 import com.thebuzzmedia.exiftool.process.Command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.thebuzzmedia.exiftool.commons.iterables.Collections.isEmpty;
 import static com.thebuzzmedia.exiftool.commons.iterables.Collections.join;
@@ -32,7 +32,7 @@ import static java.util.Collections.unmodifiableList;
  * Default implementation for {@link Command} interface.
  * This implementation should only be used with {@link com.thebuzzmedia.exiftool.process.command.CommandBuilder} builder.
  */
-public class DefaultCommand implements Command {
+public final class DefaultCommand implements Command {
 
 	/**
 	 * List of arguments:
@@ -91,6 +91,6 @@ public class DefaultCommand implements Command {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(cmd);
+		return Objects.hash(cmd);
 	}
 }

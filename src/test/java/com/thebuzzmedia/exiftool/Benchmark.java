@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,11 @@ public class Benchmark {
 				+ " total operations.\n");
 
 		ExifTool tool = new ExifToolBuilder()
-			.build();
+				.build();
 
 		ExifTool toolSO = new ExifToolBuilder()
-			.enableStayOpen()
-			.build();
+				.enableStayOpen()
+				.build();
 
 		/*
 		 * -stay_open False

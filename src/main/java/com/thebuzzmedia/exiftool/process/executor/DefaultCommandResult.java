@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 
 package com.thebuzzmedia.exiftool.process.executor;
 
-import com.thebuzzmedia.exiftool.commons.lang.Objects;
 import com.thebuzzmedia.exiftool.process.CommandResult;
+
+import java.util.Objects;
 
 import static java.lang.String.format;
 
@@ -36,7 +37,7 @@ import static java.lang.String.format;
  *
  * <strong>Note:</strong> this implementation is immutable and thread safe.
  */
-public class DefaultCommandResult implements CommandResult {
+public final class DefaultCommandResult implements CommandResult {
 
 	/**
 	 * Exit status, result of command execution.
@@ -92,8 +93,7 @@ public class DefaultCommandResult implements CommandResult {
 
 		if (o instanceof DefaultCommandResult) {
 			DefaultCommandResult r = (DefaultCommandResult) o;
-			return Objects.equals(exitStatus, r.exitStatus)
-				&& Objects.equals(output, r.output);
+			return Objects.equals(exitStatus, r.exitStatus) && Objects.equals(output, r.output);
 		}
 
 		return false;
@@ -101,6 +101,6 @@ public class DefaultCommandResult implements CommandResult {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(exitStatus, output);
+		return Objects.hash(exitStatus, output);
 	}
 }

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,10 +56,10 @@ public class DefaultStrategyTest {
 
 		Command cmd = cmdCaptor.getValue();
 		assertThat(cmd.getArguments())
-			.isNotNull()
-			.isNotEmpty()
-			.hasSameSizeAs(expectedArguments)
-			.isEqualTo(expectedArguments);
+				.isNotNull()
+				.isNotEmpty()
+				.hasSameSizeAs(expectedArguments)
+				.isEqualTo(expectedArguments);
 	}
 
 	@Test

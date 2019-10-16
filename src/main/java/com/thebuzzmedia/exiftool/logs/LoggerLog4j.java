@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ class LoggerLog4j implements Logger {
 	 * Create logger.
 	 * This constructor should be called by {@link com.thebuzzmedia.exiftool.logs.LoggerFactory} only.
 	 *
-	 * @param log Internal Logger.
+	 * @param name Logger name.
 	 */
-	LoggerLog4j(org.apache.log4j.Logger log) {
-		this.log = log;
+	LoggerLog4j(Class<?> name) {
+		this.log = org.apache.log4j.Logger.getLogger(name);
 	}
 
 	@Override

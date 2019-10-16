@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ class LoggerSlf4j implements Logger {
 	 * Create logger.
 	 * This constructor should be called by {@link com.thebuzzmedia.exiftool.logs.LoggerFactory} only.
 	 *
-	 * @param log Internal Logger.
+	 * @param name Logger name.
 	 */
-	LoggerSlf4j(org.slf4j.Logger log) {
-		this.log = log;
+	LoggerSlf4j(Class<?> name) {
+		this.log = org.slf4j.LoggerFactory.getLogger(name);
 	}
 
 	@Override

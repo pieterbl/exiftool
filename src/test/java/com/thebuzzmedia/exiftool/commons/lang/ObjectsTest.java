@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 
 package com.thebuzzmedia.exiftool.commons.lang;
 
-import com.thebuzzmedia.exiftool.commons.lang.Objects;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,9 +30,7 @@ public class ObjectsTest {
 
 		String foo = Objects.firstNonNull(v1, v2);
 
-		assertThat(foo)
-			.isNotNull()
-			.isEqualTo(v1);
+		assertThat(foo).isEqualTo(v1);
 	}
 
 	@Test
@@ -43,9 +40,7 @@ public class ObjectsTest {
 
 		String foo = Objects.firstNonNull(v1, v2);
 
-		assertThat(foo)
-			.isNotNull()
-			.isEqualTo(v2);
+		assertThat(foo).isEqualTo(v2);
 	}
 
 	@Test
@@ -58,28 +53,6 @@ public class ObjectsTest {
 
 		String foo = Objects.firstNonNull(v1, v2, o1, o2, o3);
 
-		assertThat(foo)
-			.isNotNull()
-			.isEqualTo(o2);
-	}
-
-	@Test
-	public void it_should_compute_hash_code() {
-		assertThat(Objects.hashCode((Object[]) null)).isZero();
-		assertThat(Objects.hashCode("foobar")).isNotNull();
-
-		int h1 = Objects.hashCode("foo");
-		int h2 = Objects.hashCode("foo");
-		assertThat(h1).isEqualTo(h2);
-	}
-
-	@Test
-	public void it_should_get_equality_of_values() {
-		assertThat(Objects.equals(null, null)).isTrue();
-		assertThat(Objects.equals(null, "foo")).isFalse();
-		assertThat(Objects.equals("foo", null)).isFalse();
-		assertThat(Objects.equals("foo", "foo")).isTrue();
-		assertThat(Objects.equals("bar", "foo")).isFalse();
-		assertThat(Objects.equals("foo", "bar")).isFalse();
+		assertThat(foo).isEqualTo(o2);
 	}
 }

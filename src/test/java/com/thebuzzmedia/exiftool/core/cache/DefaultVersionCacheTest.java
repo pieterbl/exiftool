@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 
 package com.thebuzzmedia.exiftool.core.cache;
 
-import static com.thebuzzmedia.exiftool.tests.ReflectionUtils.readPrivateField;
+import com.thebuzzmedia.exiftool.VersionCache;
 
 import java.util.concurrent.ConcurrentMap;
 
-import com.thebuzzmedia.exiftool.VersionCache;
+import static com.thebuzzmedia.exiftool.tests.ReflectionTestUtils.readPrivateField;
 
 public class DefaultVersionCacheTest extends AbstractVersionCacheTest<DefaultVersionCache> {
 
@@ -31,7 +31,7 @@ public class DefaultVersionCacheTest extends AbstractVersionCacheTest<DefaultVer
 	}
 
 	@Override
-	protected long size(VersionCache cache) throws Exception {
+	protected long size(VersionCache cache) {
 		return ((ConcurrentMap<?, ?>) readPrivateField(cache, "cache")).size();
 	}
 }

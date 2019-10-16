@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2016 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,7 +135,8 @@ public class PoolStrategy implements ExecutionStrategy {
 					strategies.add(strategy);
 					added++;
 				}
-			} catch (InterruptedException ex) {
+			}
+			catch (InterruptedException ex) {
 				log.warn(ex.getMessage());
 				Thread.currentThread().interrupt();
 			}
@@ -146,7 +147,8 @@ public class PoolStrategy implements ExecutionStrategy {
 		for (ExecutionStrategy strategy : strategies) {
 			try {
 				function.apply(strategy, i);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				log.error("Failed to process strategy #{}", i);
 				thrownEx.add(ex);
 			}

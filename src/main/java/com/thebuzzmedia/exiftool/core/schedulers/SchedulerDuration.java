@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 
 package com.thebuzzmedia.exiftool.core.schedulers;
 
-import com.thebuzzmedia.exiftool.commons.lang.Objects;
+import com.thebuzzmedia.exiftool.commons.lang.ToStringBuilder;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static com.thebuzzmedia.exiftool.commons.lang.PreConditions.isPositive;
@@ -27,7 +28,7 @@ import static com.thebuzzmedia.exiftool.commons.lang.PreConditions.notNull;
 /**
  * A duration, represented by a delay and a time unit.
  */
-public class SchedulerDuration {
+public final class SchedulerDuration {
 
 	/**
 	 * Create new duration in seconds.
@@ -101,13 +102,12 @@ public class SchedulerDuration {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()
-				+ "{ "
-				+   "delay: " + delay + ", "
-				+   "timeUnit: " + timeUnit
-				+ "}";
-
+		return ToStringBuilder.create(getClass())
+				.append("delay", delay)
+				.append("timeUnit", timeUnit)
+				.build();
 	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
@@ -116,7 +116,7 @@ public class SchedulerDuration {
 
 		if (o instanceof SchedulerDuration) {
 			SchedulerDuration d = (SchedulerDuration) o;
-			return delay == d.delay && timeUnit == d.timeUnit;
+			return Objects.equals(delay, d.delay) && Objects.equals(timeUnit, d.timeUnit);
 		}
 
 		return false;
@@ -124,6 +124,6 @@ public class SchedulerDuration {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(delay, timeUnit);
+		return Objects.hash(delay, timeUnit);
 	}
 }

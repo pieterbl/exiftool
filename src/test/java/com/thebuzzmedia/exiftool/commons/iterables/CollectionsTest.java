@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 
 package com.thebuzzmedia.exiftool.commons.iterables;
 
-import com.thebuzzmedia.exiftool.commons.iterables.Collections;
-import com.thebuzzmedia.exiftool.commons.iterables.Mapper;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -80,12 +78,12 @@ public class CollectionsTest {
 		verify(mapper).map(input2);
 
 		assertThat(outputs)
-			.isNotNull()
-			.isNotEmpty()
-			.hasSameSizeAs(inputs)
-			.containsExactly(
-				input1 + "from_mapper",
-				input2 + "from_mapper"
-			);
+				.isNotNull()
+				.isNotEmpty()
+				.hasSameSizeAs(inputs)
+				.containsExactly(
+						input1 + "from_mapper",
+						input2 + "from_mapper"
+				);
 	}
 }

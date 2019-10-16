@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2016 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,8 @@ class ShutdownTask implements Runnable {
 		try {
 			log.debug("Shutdown pool from task #{}", id);
 			pool.shutdown();
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			log.debug("Shutdown operation from task #{} throw exception", id);
 			thrown = ex;
 		}

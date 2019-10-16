@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import static java.lang.String.format;
  * not support (i.e. the version isn't new enough).
  *
  * @author Riyad Kalla (software@thebuzzmedia.com)
- * @author Mickael Jeanroy (mickael.jeanroy@gmail.com)
+ * @author Mickael Jeanroy
  * @since 1.1
  */
 @SuppressWarnings("serial")
@@ -69,9 +69,9 @@ public class UnsupportedFeatureException extends AbstractExifException {
 
 	private static String message(String path, Version version) {
 		String msg = "" +
-			"Use of feature requires version %s or higher of the native ExifTool program. " +
-			"The version of ExifTool referenced by the path '%s' is not high enough. " +
-			"You can either upgrade the install of ExifTool or avoid using this feature to workaround this exception.";
+				"Use of feature requires version %s or higher of the native ExifTool program. " +
+				"The version of ExifTool referenced by the path '%s' is not high enough. " +
+				"You can either upgrade the install of ExifTool or avoid using this feature to workaround this exception.";
 
 		return format(msg, version, path);
 	}

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,8 @@ class VersionCallable implements Callable<Version> {
 			}
 
 			return new Version(result.getOutput());
-		} catch (IOException ex) {
+		}
+		catch (IOException ex) {
 			log.error(ex.getMessage(), ex);
 			throw new ExifToolNotFoundException(ex, exifTool, failure(ex));
 		}

@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 
 package com.thebuzzmedia.exiftool.logs;
 
+import java.util.Iterator;
+import java.util.ServiceLoader;
+
+import static com.thebuzzmedia.exiftool.commons.reflection.DependencyUtils.isLog4j2Available;
 import static com.thebuzzmedia.exiftool.commons.reflection.DependencyUtils.isLog4jAvailable;
 import static com.thebuzzmedia.exiftool.commons.reflection.DependencyUtils.isSlf4jAvailable;
 
@@ -28,6 +32,8 @@ import static com.thebuzzmedia.exiftool.commons.reflection.DependencyUtils.isSlf
  * Appropriate implementation will be used depending on classpath.
  * Verification is done in the following order:
  * <ul>
+ *   <li>Check from {@link LoggerProvider} registered using Java Service Provider Interface (see {@link ServiceLoader}).</li>
+ *   <li>If slf4j is defined, then it will be used.</li>
  *   <li>If slf4j is defined, then it will be used.</li>
  *   <li>If log4j is defined, it will be used.</li>
  *   <li>Finally, instance of {@link com.thebuzzmedia.exiftool.logs.DefaultLogger} is used.</li>
@@ -40,25 +46,47 @@ public final class LoggerFactory {
 	}
 
 	/**
+	 * The custom logger provider provided using the Service Provider Interface.
+	 */
+	private static final LoggerProvider loggerProvider;
+
+	static {
+		// First, discover using the ServiceProvider API.
+		ServiceLoader<LoggerProvider> loggerProviders = ServiceLoader.load(LoggerProvider.class);
+		Iterator<LoggerProvider> it = loggerProviders.iterator();
+		loggerProvider = it.hasNext() ? it.next() : null;
+	}
+
+	/**
 	 * Return a logger named corresponding to the class passed as parameter,
 	 *
 	 * @param klass the returned logger will be named after clazz.
 	 * @return Logger implementation.
 	 */
 	public static Logger getLogger(Class<?> klass) {
-		// First try slf4j
+		// First, discover using the ServiceProvider API.
+		if (loggerProvider != null) {
+			return loggerProvider.getLogger(klass);
+		}
+
+		// Then, try using classpath detection.
+
+		// 1- First try slf4j
 		if (isSlf4jAvailable()) {
-			org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(klass);
-			return new LoggerSlf4j(log);
+			return new LoggerSlf4j(klass);
 		}
 
-		// Then, try log4j
+		// 2- Then, try log4j2
+		if (isLog4j2Available()) {
+			return new LoggerLog4j2(klass);
+		}
+
+		// 3- Then, try log4j
 		if (isLog4jAvailable()) {
-			org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(klass);
-			return new LoggerLog4j(log);
+			return new LoggerLog4j(klass);
 		}
 
-		// Return default logger...
+		// 4- Return default logger...
 		return new DefaultLogger(Boolean.getBoolean("exiftool.debug"));
 	}
 }

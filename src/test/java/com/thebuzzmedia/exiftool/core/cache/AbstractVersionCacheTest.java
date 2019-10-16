@@ -1,6 +1,6 @@
 /**
  * Copyright 2011 The Buzz Media, LLC
- * Copyright 2015 Mickael Jeanroy <mickael.jeanroy@gmail.com>
+ * Copyright 2015-2019 Mickael Jeanroy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,6 @@
 
 package com.thebuzzmedia.exiftool.core.cache;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
 import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.VersionCache;
 import com.thebuzzmedia.exiftool.exceptions.ExifToolNotFoundException;
@@ -35,19 +24,26 @@ import com.thebuzzmedia.exiftool.process.Command;
 import com.thebuzzmedia.exiftool.process.CommandExecutor;
 import com.thebuzzmedia.exiftool.process.CommandResult;
 import com.thebuzzmedia.exiftool.tests.builders.CommandResultBuilder;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class AbstractVersionCacheTest<T extends VersionCache> {
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	private String exifTool;
 
@@ -82,31 +78,40 @@ public abstract class AbstractVersionCacheTest<T extends VersionCache> {
 
 	@Test
 	public void it_should_throw_exception_without_success_response() throws Exception {
-		VersionCache cache = create();
-
-		CommandResult result = new CommandResultBuilder()
-				.success(false)
-				.output(null)
-				.build();
+		final VersionCache cache = create();
+		final CommandResult result = new CommandResultBuilder().success(false).output(null).build();
 
 		when(executor.execute(any(Command.class))).thenReturn(result);
 
-		thrown.expect(ExifToolNotFoundException.class);
-		thrown.expectMessage("Cannot find exiftool from path: exiftool");
+		ThrowableAssert.ThrowingCallable load = new ThrowableAssert.ThrowingCallable() {
+			@Override
+			public void call() {
+				cache.load(exifTool, executor);
+			}
+		};
 
-		cache.load(exifTool, executor);
+		assertThatThrownBy(load)
+				.isInstanceOf(ExifToolNotFoundException.class)
+				.hasMessage("Cannot find exiftool from path: exiftool");
 	}
 
 	@Test
 	public void it_should_return_null_with_io_exception() throws Exception {
-		VersionCache cache = create();
+		final VersionCache cache = create();
+		final IOException ex = new IOException();
 
-		IOException ex = new IOException();
 		when(executor.execute(any(Command.class))).thenThrow(ex);
 
-		thrown.expectCause(is(ex));
+		ThrowableAssert.ThrowingCallable load = new ThrowableAssert.ThrowingCallable() {
+			@Override
+			public void call() {
+				cache.load(exifTool, executor);
+			}
+		};
 
-		cache.load(exifTool, executor);
+		assertThatThrownBy(load)
+				.isInstanceOf(ExifToolNotFoundException.class)
+				.hasCause(ex);
 	}
 
 	@Test
